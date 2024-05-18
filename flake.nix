@@ -1,7 +1,20 @@
 {
   description = "Example of using Home Manager with Nix flakes";
 
-  inputs = { };
+  inputs = {
+    flake-utils.url = "github:numtide/flake-utils";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixpkgs.url = "github:NixOS/nixpkgs";
+  };
 
-  outputs = inputs@{ ... }: { };
+  outputs = inputs@{ flake-utils, nixpkgs, ... }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs { inherit system; };
+      in
+      { }
+    );
 }
