@@ -15,6 +15,17 @@
       let
         pkgs = import nixpkgs { inherit system; };
       in
-      { }
+      {
+        packages.default =
+          let
+            homeConfiguration =
+              inputs.home-manager.lib.homeManagerConfiguration {
+                inherit pkgs;
+                modules = [ ./home.nix ];
+                extraSpecialArgs = { inherit inputs; };
+              };
+          in
+          homeConfiguration.activationPackage;
+      }
     );
 }
