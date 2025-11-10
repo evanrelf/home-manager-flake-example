@@ -19,7 +19,7 @@
       perSystem = { config, inputs', pkgs, system, ... }: {
         _module.args.pkgs = import inputs.nixpkgs { localSystem = system; };
 
-        # Packaging up your Home Manager configuration.
+        # This defines the package for your Home Manager configuration.
         legacyPackages.homeConfigurations.default =
           inputs.home-manager.lib.homeManagerConfiguration {
             inherit pkgs;
@@ -27,7 +27,8 @@
             extraSpecialArgs = { inherit inputs; };
           };
 
-        # Call `nix run` to apply your Home Manager configuration.
+        # This defines a default "entrypoint" program for this flake, available
+        # by calling `nix run`, that will apply your Home Manager configuration.
         packages.default =
           pkgs.writeShellScriptBin "dotfiles-apply" ''
             exec ${pkgs.home-manager}/bin/home-manager --flake .#default switch
