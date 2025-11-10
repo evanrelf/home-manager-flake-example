@@ -1,6 +1,4 @@
 {
-  description = "Example of using Home Manager with Nix flakes";
-
   inputs = {
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
@@ -22,18 +20,17 @@
         _module.args.pkgs = import inputs.nixpkgs { localSystem = system; };
 
         # Packaging up your Home Manager configuration.
-        packages.homeConfigurations.default =
+        legacyPackages.homeConfigurations.default =
           inputs.home-manager.lib.homeManagerConfiguration {
             inherit pkgs;
             modules = [ ./home.nix ];
             extraSpecialArgs = { inherit inputs; };
           };
 
-        # A wrapper around the `home-manager` program to point it at this flake.
-        # Run it with `nix run . -- <options>`, e.g. `nix run . -- switch`.
+        # Call `nix run` to apply your Home Manager configuration.
         packages.default =
-          pkgs.writeShellScriptBin "home-manager" ''
-            exec ${pkgs.home-manager}/bin/home-manager --flake .#default $@
+          pkgs.writeShellScriptBin "dotfiles-apply" ''
+            exec ${pkgs.home-manager}/bin/home-manager --flake .#default switch
           '';
       };
     };

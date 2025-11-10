@@ -1,16 +1,20 @@
 { config, inputs, lib, pkgs, ... }:
 
 {
-  home.stateVersion = "24.05";
+  # TODO: Choose the latest version from this list when you first set up Home
+  # Manager, and then leave it alone thereafter.
+  # https://nix-community.github.io/home-manager/options.xhtml#opt-home.stateVersion
+  home.stateVersion = "25.11";
 
-  # Change this to your username (`whoami` or `$USER`).
+  # TODO: Change this to your username.
   home.username = "evanrelf";
 
-  # Keep this as is if you're on macOS, or change the prefix from `/Users/` to
-  # `/home/` if you're on Linux.
-  home.homeDirectory = "/Users/${config.home.username}";
+  # TODO: Pick one of these depending on your OS.
+  home.homeDirectory = "/Users/${config.home.username}"; # macOS
+  # home.homeDirectory = "/home/${config.home.username}"; # Linux
 
-  home.packages = [
-    pkgs.cowsay
+  home.packages = with pkgs; [
+    # TODO: List the packages you want installed here.
+    home-manager
   ];
 }
