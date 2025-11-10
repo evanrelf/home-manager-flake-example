@@ -23,7 +23,9 @@
   # home.homeDirectory = "/home/${config.home.username}"; # Linux
 
   home.packages = with pkgs; [
-    # TODO: List the packages you want installed here.
+    # TODO: List the packages you want installed here. You can search over 100k
+    # packages available in Nixpkgs here:
+    # https://search.nixos.org/packages?channel=unstable
     home-manager
   ];
 }
