@@ -2,20 +2,25 @@
   description = "Example of using Home Manager with Nix flakes";
 
   inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixpkgs.url = "github:NixOS/nixpkgs";
+    systems.url = "github:nix-systems/default";
   };
 
-  outputs = inputs@{ flake-utils, nixpkgs, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = import nixpkgs { inherit system; };
-      in
-      {
+  outputs = inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = import inputs.systems;
+
+      perSystem = { config, inputs', pkgs, system, ... }: {
+        _module.args.pkgs = import inputs.nixpkgs { localSystem = system; };
+
         # Packaging up your Home Manager configuration.
         packages.homeConfigurations.default =
           inputs.home-manager.lib.homeManagerConfiguration {
@@ -30,6 +35,6 @@
           pkgs.writeShellScriptBin "home-manager" ''
             exec ${pkgs.home-manager}/bin/home-manager --flake .#default $@
           '';
-      }
-    );
+      };
+    };
 }
